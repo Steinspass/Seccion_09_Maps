@@ -1,10 +1,16 @@
 package com.example.ndpsh.seccion_09_maps.Fragments;
 
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,6 +41,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private List<Address> addresses;
     private Geocoder geocoder;
+
+    private MarkerOptions marker;
 
 
     public MapsFragment() {
@@ -61,6 +70,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             mapView.onResume();
             mapView.getMapAsync(this);
         }
+
     }
 
     @Override
@@ -72,12 +82,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //Otra forma de hacer zoom
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
 
-        gMap.addMarker(new MarkerOptions()
-                .position(place)
-                .title("Marker in Tokyo")
-                .draggable(true));
-        gMap.moveCamera(CameraUpdateFactory
-                .newLatLng(place));
+        marker = new MarkerOptions();
+        marker.position(place);
+        marker.title("Mi marcador");
+        marker.draggable(true);
+        marker.snippet("");
+        marker.icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_menu_mylocation));
+
+
+        gMap.addMarker(marker);
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(place));
         gMap.animateCamera(zoom);
 
         gMap.setOnMarkerDragListener(this);
@@ -87,6 +101,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public void onMarkerDragStart(Marker marker) {
+        marker.hideInfoWindow();
 
     }
 
